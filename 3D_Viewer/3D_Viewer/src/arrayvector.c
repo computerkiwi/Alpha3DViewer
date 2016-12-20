@@ -69,7 +69,7 @@ float ArrayVector_DotProduct(const float vec1[], const float vec2[], int size)
 
 	for (int i = 0; i < size; i++)
 	{
-		result = vec1[i] * vec2[i];
+		result += vec1[i] * vec2[i];
 	}
 
 	return result;
@@ -121,7 +121,7 @@ void ArrayVector_CrossProduct(const float vec1[], const float vec2[], float vecO
 float ArrayVector_Angle(const float vec1[], const float vec2[], int size)
 {
 	float angle_radians = acosf(ArrayVector_DotProduct(vec1, vec2, size) / 
-		             ArrayVector_Magnitude(vec1, size) * ArrayVector_Magnitude(vec2, size));
+		             (ArrayVector_Magnitude(vec1, size) * ArrayVector_Magnitude(vec2, size)));
 
 	return angle_radians * 180.0f / PI;
 }

@@ -97,13 +97,11 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 	_Unreferenced_parameter_(cam_pitch);
 	_Unreferenced_parameter_(cam_yaw);
 
-
-	float vectorForward[3] = { 0.0f, 0.0f, 1.0f };
-
 	Triangle3D_UpdateNormal(tri);
+	Triangle3D_UpdateCentroid(tri);
 
 	//If the dot product is less than than zero, the triangle is pointing away from us so we don't draw it.
-	if (ArrayVector_DotProduct(vectorForward, tri->normal, 3) < 0) //This might be backwards. Fix it later.
+	if (ArrayVector_DotProduct(tri->centroid, tri->normal, 3) < 0) //This might be backwards. Fix it later.
 	{
 		return;
 	}
@@ -136,7 +134,7 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 	//Get the shade we want the triangle to be based on angle to the camera.
 
 	float tint = 1.0f;
-	float vAngle = ArrayVector_Angle(tri->normal, vectorForward, 3);
+	float vAngle = ArrayVector_Angle(tri->normal, tri->centroid, 3);
 	if (vAngle > 90)
 	{
 		vAngle = 180 - vAngle;
