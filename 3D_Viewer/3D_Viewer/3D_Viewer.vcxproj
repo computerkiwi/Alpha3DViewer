@@ -123,10 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\arrayvector.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\triangle3d.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\arrayvector.h" />
     <ClInclude Include="src\triangle3d.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
