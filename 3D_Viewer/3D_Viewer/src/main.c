@@ -33,8 +33,11 @@ Triangle3D *tri2;
 int GameLoop()
 {
 	static float z_distance = 0.2f;
+	static float x_distance = 0;
 
 	z_distance += 0.001f;
+	x_distance = (float)(((int)x_distance + 2) % 500);
+
 
 	// Start drawing.
 	AESysFrameStart();
@@ -43,6 +46,11 @@ int GameLoop()
 	tri1->points[1][2] = z_distance;
 	tri1->points[2][2] = z_distance;
 	Triangle3D_Draw(tri1, NULL, 0, 0);
+
+	tri2->points[0][0] = x_distance - 250;
+	tri2->points[1][0] = x_distance - 250;
+	tri2->points[2][0] = x_distance - 250;
+	Triangle3D_Draw(tri2, NULL, 0, 0);
 
 	// Finish drawing.
 	AESysFrameEnd();
@@ -86,6 +94,7 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 
 	//Make some triangles
 	tri1 = Triangle3D_New(100, 0, 1, 150, 0, 1, 95, 50, 1);
+	tri2 = Triangle3D_New(-100, -100, 1, -100, -100, 3, -100, -50, 1);
 
 	//Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
