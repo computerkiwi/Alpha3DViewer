@@ -23,6 +23,7 @@ This file contains the entry into the program.
 // ---------------------------------------------------------------------------
 // Globals
 
+AEGfxVertexList *test_mesh;
 
 // ---------------------------------------------------------------------------
 // Functions
@@ -34,6 +35,14 @@ int GameLoop()
 	// Start drawing.
 	AESysFrameStart();
 
+	//Draw out test mesh
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+
+	AEGfxSetFullTransformWithZOrder(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxSetTransparency(1.0f);
+	AEGfxMeshDraw(test_mesh, AE_GFX_MDM_TRIANGLES);
+
 	// Finish drawing.
 	AESysFrameEnd();
 
@@ -44,6 +53,7 @@ int GameLoop()
 int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_line, int show)
 {
 	//TODO: Load a .obj file.
+
 
 	_Unreferenced_parameter_(prevInstanceH);
 	_Unreferenced_parameter_(command_line);
@@ -68,8 +78,22 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	//Not totally sure what this does. Example says "reset the system modules"
 	AESysReset();
 
-	int gameRunning = TRUE;
+	//Make a test mesh.
+	AEGfxMeshStart();
 
+	AEGfxTriAdd(
+		0.0f, 0.0f, 0xFFFF0000, 0.0f, 0.0f,
+		50.0f, 0.0f, 0xFFFF0000, 0.0f, 0.0f,
+		0.0f, 50.0f, 0xFFFF0000, 0.0f, 0.0f);
+
+	test_mesh = AEGfxMeshEnd();
+	
+
+	//Set the background to black.
+	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+
+	int gameRunning = TRUE;
 	while (gameRunning)
 	{
 		gameRunning = GameLoop();
