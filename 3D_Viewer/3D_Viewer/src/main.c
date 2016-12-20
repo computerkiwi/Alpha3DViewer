@@ -14,16 +14,16 @@ This file contains the entry into the program.
 // Includes
 
 #include "AEEngine.h"
-#include <stdio.h>
+#include "triangle3d.h"
 
 // ---------------------------------------------------------------------------
 // Defines
 
-
 // ---------------------------------------------------------------------------
 // Globals
 
-AEGfxVertexList *triangle_mesh;
+Triangle3D *tri1;
+Triangle3D *tri2;
 
 // ---------------------------------------------------------------------------
 // Functions
@@ -32,24 +32,17 @@ AEGfxVertexList *triangle_mesh;
 // Handles things to be done each cycle of the loop. Returns TRUE to continue running.
 int GameLoop()
 {
-	static float angle = 0.0f;
+	static float z_distance = 0.2f;
 
-	angle += 0.5;
+	z_distance += 0.001f;
 
 	// Start drawing.
 	AESysFrameStart();
 
-	//Draw out test mesh
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-
-	float transform[3][3] = { { 50.0f,0.0f,0.0f },
-	                          { 0.0f,50.0f,0.0f },
-	                          { 0.0f,0.0f,1.0f } };
-
-	AEGfxSetTransform(transform);
-	AEGfxTextureSet(NULL, 0, 0);
-	AEGfxSetTransparency(1.0f);
-	AEGfxMeshDraw(triangle_mesh, AE_GFX_MDM_TRIANGLES);
+	tri1->points[0][2] = z_distance;
+	tri1->points[1][2] = z_distance;
+	tri1->points[2][2] = z_distance;
+	Triangle3D_Draw(tri1, NULL, 0, 0);
 
 	// Finish drawing.
 	AESysFrameEnd();
@@ -66,7 +59,9 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	_Unreferenced_parameter_(prevInstanceH);
 	_Unreferenced_parameter_(command_line);
 
-	// Initialize the system 
+
+
+	// Initialize Alpha Engine 
 	AESysInitInfo sysInitInfo;
 	sysInitInfo.mCreateWindow = 1;
 	sysInitInfo.mWindowHandle = NULL;
@@ -84,17 +79,13 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	AESysInit(&sysInitInfo);
 
 	//Not totally sure what this does. Example says "reset the system modules"
-	AESysReset();
+	AESysReset();	
 
-	//Make the triangle mesh
-	AEGfxMeshStart();
+	//Initialize 3D triangles
+	Triangle3D_Init();
 
-	AEGfxVertexAdd(0.0f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
-	AEGfxVertexAdd(1.0f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
-	AEGfxVertexAdd(0.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f);
-
-	triangle_mesh = AEGfxMeshEnd();
-	
+	//Make some triangles
+	tri1 = Triangle3D_New(100, 0, 1, 150, 0, 1, 95, 50, 1);
 
 	//Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
