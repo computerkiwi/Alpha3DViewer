@@ -23,7 +23,7 @@ This file contains the entry into the program.
 // ---------------------------------------------------------------------------
 // Globals
 
-AEGfxVertexList *test_mesh;
+AEGfxVertexList *triangle_mesh;
 
 // ---------------------------------------------------------------------------
 // Functions
@@ -32,16 +32,24 @@ AEGfxVertexList *test_mesh;
 // Handles things to be done each cycle of the loop. Returns TRUE to continue running.
 int GameLoop()
 {
+	static float angle = 0.0f;
+
+	angle += 0.5;
+
 	// Start drawing.
 	AESysFrameStart();
 
 	//Draw out test mesh
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 
-	AEGfxSetFullTransformWithZOrder(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	float transform[3][3] = { { 50.0f,0.0f,0.0f },
+	                          { 0.0f,50.0f,0.0f },
+	                          { 0.0f,0.0f,1.0f } };
+
+	AEGfxSetTransform(transform);
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxSetTransparency(1.0f);
-	AEGfxMeshDraw(test_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(triangle_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// Finish drawing.
 	AESysFrameEnd();
@@ -78,15 +86,14 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	//Not totally sure what this does. Example says "reset the system modules"
 	AESysReset();
 
-	//Make a test mesh.
+	//Make the triangle mesh
 	AEGfxMeshStart();
 
-	AEGfxTriAdd(
-		0.0f, 0.0f, 0xFFFF0000, 0.0f, 0.0f,
-		50.0f, 0.0f, 0xFFFF0000, 0.0f, 0.0f,
-		0.0f, 50.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(0.0f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+	AEGfxVertexAdd(1.0f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+	AEGfxVertexAdd(0.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f);
 
-	test_mesh = AEGfxMeshEnd();
+	triangle_mesh = AEGfxMeshEnd();
 	
 
 	//Set the background to black.
