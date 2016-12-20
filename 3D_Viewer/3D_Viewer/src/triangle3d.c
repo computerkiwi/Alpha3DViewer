@@ -14,7 +14,9 @@ This file contains implementation for 3D triangles.
 // Includes
 
 #include "triangle3d.h"
+#include "arrayvector.h"
 #include "AEEngine.h"
+#include <math.h>
 
 // ---------------------------------------------------------------------------
 // Defines
@@ -60,6 +62,20 @@ Triangle3D *Triangle3D_New(float x1, float y1, float z1, float x2, float y2, flo
 	return new_tri;
 }
 
+//Updates the normal vector on a given Triangle3D.
+void Triangle3D_UpdateNormal(Triangle3D *tri)
+{
+	//Get two direction vectors of the triangle.
+	float dirVector1[3];
+	ArrayVector_Subtract(tri->points[0], tri->points[1], dirVector1, 3);
+	float dirVector2[3];
+	ArrayVector_Subtract(tri->points[0], tri->points[2], dirVector2, 3);
+
+
+	//Cross product of those two is the normal.
+	ArrayVector_CrossProduct(dirVector1, dirVector2, tri->normal);
+}
+
 //Draws a given triangle given a camera's position (3-large array), pitch, and yaw. Currently does not actually handle the camera.
 void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float cam_yaw)
 {
@@ -69,7 +85,17 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 	_Unreferenced_parameter_(cam_pos);
 	_Unreferenced_parameter_(cam_pitch);
 	_Unreferenced_parameter_(cam_yaw);
-	//TODO: Set color or don't draw based on dot product of normal and camera.
+
+
+	float vectorForward[3] = { 0.0f, 0.0f, 1.0f };
+
+	Triangle3D_UpdateNormal(tri);
+
+	//If the dot product is less than than zero, the triangle is pointing away from us so we don't draw it.
+	if (ArrayVector_DotProduct(vectorForward, tri->normal, 3) < 0) //This might be backwards. Fix it later.
+	{
+		return;
+	}
 
 	//For each point...
 	for (int p = 0; p < 3; p++)
@@ -96,10 +122,23 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 	matrix[2][2] = 0.0f;
 	//Seriously, this is really bad. Fix it when you have actual matrices.
 
+	//Get the shade we want the triangle to be based on angle to the camera.
+
+	float tint = 1.0f;
+	float vAngle = ArrayVector_Angle(tri->normal, vectorForward, 3);
+	if (vAngle > 90)
+	{
+		vAngle = 180 - vAngle;
+	}
+
+	tint -=vAngle / 95.0f;
+
 	//Actually draw it.
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetTintColor(tint, tint, tint, 1.0f);
 	AEGfxSetTransform(matrix);
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxSetTransparency(1.0f);
 	AEGfxMeshDraw(triangle_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 }

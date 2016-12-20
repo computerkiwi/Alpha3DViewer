@@ -32,7 +32,7 @@ Triangle3D *tri2;
 // Handles things to be done each cycle of the loop. Returns TRUE to continue running.
 int GameLoop()
 {
-	static float z_distance = 0.2f;
+	static float z_distance = 0.4f;
 	static float x_distance = 0;
 
 	z_distance += 0.001f;
@@ -48,7 +48,6 @@ int GameLoop()
 	Triangle3D_Draw(tri1, NULL, 0, 0);
 
 	tri2->points[0][0] = x_distance - 250;
-	tri2->points[1][0] = x_distance - 250;
 	tri2->points[2][0] = x_distance - 250;
 	Triangle3D_Draw(tri2, NULL, 0, 0);
 
@@ -61,6 +60,10 @@ int GameLoop()
 // It's main. It launches everything.
 int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_line, int show)
 {
+	//Open a console.
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+
 	//TODO: Load a .obj file.
 
 
@@ -94,7 +97,7 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 
 	//Make some triangles
 	tri1 = Triangle3D_New(100, 0, 1, 150, 0, 1, 95, 50, 1);
-	tri2 = Triangle3D_New(-100, -100, 1, -100, -100, 3, -100, -50, 1);
+	tri2 = Triangle3D_New(-100, -100, 1, -100, 0, 100, -100, 0, 1);
 
 	//Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);

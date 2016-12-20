@@ -15,6 +15,7 @@ This file contains implementation for functions for manipulating arrays as vecto
 
 #include <stdlib.h>
 #include <math.h>
+#include "AEMath.h"
 
 // ---------------------------------------------------------------------------
 // Defines
@@ -106,12 +107,21 @@ void ArrayVector_CrossProduct(const float vec1[], const float vec2[], float vecO
 	//New vector so we don't overwrite things we shouldn't if vecOut is vec1 or vec2.
 	float newVector[3]; 
 
-	newVector[0] = vec1[1] * vec2[2] - vec2[1] * vec2[2];
-	newVector[1] = vec1[2] * vec2[0] - vec2[2] * vec2[0];
-	newVector[2] = vec1[0] * vec2[1] - vec2[0] * vec2[1];
+	newVector[0] = vec1[1] * vec2[2] - vec2[1] * vec1[2];
+	newVector[1] = vec1[2] * vec2[0] - vec2[2] * vec1[0];
+	newVector[2] = vec1[0] * vec2[1] - vec2[0] * vec1[1];
 
 	for (int i = 0; i < 3; i++)
 	{
 		vecOut[i] = newVector[i];
 	}
+}
+
+//Returns the angle between two vectors in degrees.
+float ArrayVector_Angle(const float vec1[], const float vec2[], int size)
+{
+	float angle_radians = acosf(ArrayVector_DotProduct(vec1, vec2, size) / 
+		             ArrayVector_Magnitude(vec1, size) * ArrayVector_Magnitude(vec2, size));
+
+	return angle_radians * 180.0f / PI;
 }

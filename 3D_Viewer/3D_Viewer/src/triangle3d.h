@@ -14,6 +14,8 @@ This file contains definitions for 3D triangles.
 typedef struct Triangle3D
 {
 	float points[3][3];
+
+	float normal[3];
 } Triangle3D;
 
 //Sets up everything the 3D triangle system needs to function. Must be initialized after AEGfx.

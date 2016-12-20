@@ -38,3 +38,6 @@ void ArrayVector_Normalize(float vector[], int size);
 
 //Stores the cross product of two 3d vectors in a 3rd vector.
 void ArrayVector_CrossProduct(const float vec1[], const float vec2[], float vecOut[]);
+
+//Returns the angle between two vectors.
+float ArrayVector_Angle(const float vec1[], const float vec2[], int size);
