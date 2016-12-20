@@ -21,6 +21,8 @@ This file contains implementation for 3D triangles.
 // ---------------------------------------------------------------------------
 // Defines
 
+#define PLANE_DISTANCE 300
+
 // ---------------------------------------------------------------------------
 // Globals
 
@@ -90,6 +92,13 @@ void Triangle3D_UpdateCentroid(Triangle3D *tri)
 //Draws a given triangle given a camera's position (3-large array), pitch, and yaw. Currently does not actually handle the camera.
 void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float cam_yaw)
 {
+	//Temp: MOVE AROUND
+	float dir[3] = { -0.1f,-0.05f,0 };
+	ArrayVector_Add(dir, tri->points[0], tri->points[0], 3);
+	ArrayVector_Add(dir, tri->points[1], tri->points[1], 3);
+	ArrayVector_Add(dir, tri->points[2], tri->points[2], 3);
+	//End Temp
+	
 	float points_2d[3][2]; //Newly projected points.
 
 	//TODO: Transform 3d points based on camera position.
@@ -112,7 +121,7 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 		//Do a simple perspective projection.
 		for (int i = 0; i < 2; i++)
 		{
-			points_2d[p][i] = tri->points[p][i] / tri->points[p][2];
+			points_2d[p][i] = PLANE_DISTANCE * tri->points[p][i] / tri->points[p][2];
 		}
 	}
 
@@ -140,7 +149,7 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 		vAngle = 180 - vAngle;
 	}
 
-	tint -=vAngle / 95.0f;
+	tint -=vAngle / 100.0f;
 
 	//Actually draw it.
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);

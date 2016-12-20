@@ -15,6 +15,7 @@ This file contains the entry into the program.
 
 #include "AEEngine.h"
 #include "triangle3d.h"
+#include "tri_container.h"
 
 // ---------------------------------------------------------------------------
 // Defines
@@ -22,8 +23,7 @@ This file contains the entry into the program.
 // ---------------------------------------------------------------------------
 // Globals
 
-Triangle3D *tri1;
-Triangle3D *tri2;
+TriContainer *triangles;
 
 // ---------------------------------------------------------------------------
 // Functions
@@ -42,14 +42,7 @@ int GameLoop()
 	// Start drawing.
 	AESysFrameStart();
 
-	tri1->points[0][2] = z_distance;
-	tri1->points[1][2] = z_distance;
-	tri1->points[2][2] = z_distance;
-	Triangle3D_Draw(tri1, NULL, 0, 0);
-
-	tri2->points[0][0] = x_distance - 250;
-	tri2->points[2][0] = x_distance - 250;
-	Triangle3D_Draw(tri2, NULL, 0, 0);
+	TriContainer_Draw(triangles, NULL, 0, 0);
 
 	// Finish drawing.
 	AESysFrameEnd();
@@ -95,9 +88,34 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	//Initialize 3D triangles
 	Triangle3D_Init();
 
-	//Make some triangles
-	tri1 = Triangle3D_New(100, 0, 1, 150, 0, 1, 95, 50, 1);
-	tri2 = Triangle3D_New(-100, -100, 1, -100, 0, 100, -100, 0, 1);
+	//Manually setup a cube.
+	triangles = TriContainer_New(25, 17, 30);
+
+	//Front
+	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, -5, 5, 5, -5, -5, 5, -5));
+	//Bottom-right, upper-right, upper-left. Counter clockwise.
+	TriContainer_AddTri(triangles, Triangle3D_New(-5, -5, -5, 5, -5, -5, -5, 5, -5));
+	//Bottom-left, bottom-right, upper-left. Counter clockwise.
+
+	//Left
+	TriContainer_AddTri(triangles, Triangle3D_New(-5, 5, -5, -5, 5, 5, -5, -5, -5));
+	TriContainer_AddTri(triangles, Triangle3D_New(-5, 5, 5, -5, -5, 5, -5, -5, -5));
+
+	//Bottom
+	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, -5, -5, -5, -5, -5, -5, 5));
+	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, 5, 5, -5, -5, -5, -5, 5));
+
+	//Right
+	TriContainer_AddTri(triangles, Triangle3D_New(5, 5, 5, 5, 5, -5, 5, -5, -5));
+	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, 5, 5, 5, 5, 5, -5, -5));
+
+	//Top
+	TriContainer_AddTri(triangles, Triangle3D_New(-5, 5, -5, 5, 5, -5, -5, 5, 5));
+	TriContainer_AddTri(triangles, Triangle3D_New(5, 5, -5, 5, 5, 5, -5, 5, 5));
+
+	//Back
+	TriContainer_AddTri(triangles, Triangle3D_New(5, 5, 5, 5, -5, 5, -5, 5, 5));
+	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, 5, -5, -5, 5, -5, 5, 5));
 
 	//Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
