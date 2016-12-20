@@ -15,6 +15,8 @@ typedef struct Triangle3D
 {
 	float points[3][3];
 
+	float centroid[3];
+
 	float normal[3];
 } Triangle3D;
 

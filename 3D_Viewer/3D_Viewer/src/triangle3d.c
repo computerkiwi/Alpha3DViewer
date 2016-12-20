@@ -76,6 +76,17 @@ void Triangle3D_UpdateNormal(Triangle3D *tri)
 	ArrayVector_CrossProduct(dirVector1, dirVector2, tri->normal);
 }
 
+//Updates the centroid point based on the other points
+void Triangle3D_UpdateCentroid(Triangle3D *tri)
+{
+	//Add the 3 points into the centroid.
+	ArrayVector_Add(tri->points[0], tri->points[1], tri->centroid, 3);
+	ArrayVector_Add(tri->points[2], tri->centroid, tri->centroid, 3);
+
+	//Divide by 3.
+	ArrayVector_ScalarDivide(tri->centroid, 3.0f, tri->centroid, 3);
+}
+
 //Draws a given triangle given a camera's position (3-large array), pitch, and yaw. Currently does not actually handle the camera.
 void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float cam_yaw)
 {
