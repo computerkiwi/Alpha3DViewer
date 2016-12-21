@@ -149,7 +149,7 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 		vAngle = 180 - vAngle;
 	}
 
-	tint -=vAngle / 100.0f;
+	tint -=vAngle / 120.0f;
 
 	//Actually draw it.
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
