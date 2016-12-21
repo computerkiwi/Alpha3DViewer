@@ -124,7 +124,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\arraymatrix4.c" />
     <ClCompile Include="src\arrayvector.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\triangle3d.c" />
