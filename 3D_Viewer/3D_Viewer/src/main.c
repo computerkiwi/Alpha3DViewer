@@ -35,7 +35,7 @@ int GameLoop()
 	static float time = 0;
 	time += 0.025f;
 
-	TriContainer_SetPos(triangles, cosf(time) * 15, sinf(time) * 15, 50, time, time + 60);
+	TriContainer_SetPos(triangles, cosf(time) * 15, sinf(time) * 15, 50, time, time * 1.2f);
 
 	// Start drawing.
 	AESysFrameStart();
