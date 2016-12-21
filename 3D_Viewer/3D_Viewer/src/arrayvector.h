@@ -41,3 +41,9 @@ void ArrayVector_CrossProduct(const float vec1[], const float vec2[], float vecO
 
 //Returns the angle between two vectors.
 float ArrayVector_Angle(const float vec1[], const float vec2[], int size);
+
+//Stores a rotated copy of a 3d vector in a second vector. Rotates around the origin.
+void ArrayVector_Rotated(const float vector[], float pitch, float yaw, float vecOut[]);
+
+//Rotates a 3d vector around the origin.
+void ArrayVector_Rotate(float vector[], float pitch, float yaw);

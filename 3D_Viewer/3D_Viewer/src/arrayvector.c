@@ -125,3 +125,22 @@ float ArrayVector_Angle(const float vec1[], const float vec2[], int size)
 
 	return angle_radians * 180.0f / PI;
 }
+
+//Stores a rotated copy of a 3d vector in a second vector. Rotates around the origin.
+void ArrayVector_Rotated(const float vector[], float pitch, float yaw, float vecOut[])
+{
+	float x = vector[0];
+	float y = vector[1];
+	float z = vector[2];
+
+	//Precalculated matrix multiplication. Pitch followed by yaw.
+	vecOut[0] = cosf(yaw) * x - sinf(yaw) * sinf(pitch) * y - sinf(yaw) * cosf(pitch) * z;
+	vecOut[1] = cosf(pitch) * y - sinf(pitch) * z;
+	vecOut[2] = sinf(yaw) * x + cosf(yaw) * sinf(pitch) * y + cosf(yaw) * cosf(pitch) * z;
+}
+
+//Rotates a 3d vector around the origin.
+void ArrayVector_Rotate(float vector[], float pitch, float yaw)
+{
+	ArrayVector_Rotated(vector, pitch, yaw, vector);
+}
