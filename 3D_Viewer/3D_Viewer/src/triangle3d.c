@@ -21,7 +21,7 @@ This file contains implementation for 3D triangles.
 // ---------------------------------------------------------------------------
 // Defines
 
-#define PLANE_DISTANCE 300
+#define PLANE_DISTANCE 640 //~90 degree FOV.
 
 // ---------------------------------------------------------------------------
 // Globals
@@ -93,7 +93,7 @@ void Triangle3D_UpdateCentroid(Triangle3D *tri)
 void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float cam_yaw)
 {
 	//Temp: MOVE AROUND
-	float dir[3] = { -0.1f,-0.05f,0 };
+	float dir[3] = { -0.1f,0.04f,0.04f };
 	ArrayVector_Add(dir, tri->points[0], tri->points[0], 3);
 	ArrayVector_Add(dir, tri->points[1], tri->points[1], 3);
 	ArrayVector_Add(dir, tri->points[2], tri->points[2], 3);
