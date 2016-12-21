@@ -18,11 +18,13 @@ This file contains implementation for a 3D triangle container.
 #include "arrayvector.h"
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 // ---------------------------------------------------------------------------
 // Defines
 
 #define MAX_TRIS 100
+#define PI 3.1415926535f
 
 // ---------------------------------------------------------------------------
 // Globals
@@ -31,7 +33,7 @@ This file contains implementation for a 3D triangle container.
 // Functions
 
 //Returns a pointer to a newly allocated TriContainer given offset coordinates.
-TriContainer *TriContainer_New(float x, float y, float z)
+TriContainer *TriContainer_New(float x, float y, float z, float pitch, float yaw)
 {
 	//Make a new tri container.
 	TriContainer *new_container = malloc(sizeof(TriContainer));
@@ -44,6 +46,8 @@ TriContainer *TriContainer_New(float x, float y, float z)
 	new_container->offset[0] = x;
 	new_container->offset[1] = y;
 	new_container->offset[2] = z;
+	new_container->pitch = pitch * PI / 180;
+	new_container->yaw = yaw * PI / 180;
 
 	return new_container;
 }
@@ -69,6 +73,10 @@ void TriContainer_AddTri(TriContainer *triContainer, Triangle3D *tri)
 	//If we're within our max array size...
 	if (i < MAX_TRIS)
 	{
+		//Rotate first. (HACKY)
+		ArrayVector_Rotate(tri->points[0], triContainer->pitch, triContainer->yaw);
+		ArrayVector_Rotate(tri->points[1], triContainer->pitch, triContainer->yaw);
+		ArrayVector_Rotate(tri->points[2], triContainer->pitch, triContainer->yaw);
 		//Apply our offset. (This is a fake hacky way to do this at the moment.)
 		ArrayVector_Add(triContainer->offset, tri->points[0], tri->points[0], 3);
 		ArrayVector_Add(triContainer->offset, tri->points[1], tri->points[1], 3);

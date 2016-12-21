@@ -16,11 +16,13 @@ typedef struct TriContainer
 	Triangle3D **triangles;
 
 	float offset[3];
+	float pitch;
+	float yaw;
 } TriContainer;
 
 
 //Returns a pointer to a newly allocated TriContainer given offset coordinates.
-TriContainer *TriContainer_New(float x, float y, float z);
+TriContainer *TriContainer_New(float x, float y, float z, float pitch, float yaw);
 
 //Frees all the memory associated with a tri container.
 void TriContainer_Free(TriContainer *triContainer);

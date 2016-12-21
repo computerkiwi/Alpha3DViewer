@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	Triangle3D_Init();
 
 	//Manually setup a cube.
-	triangles = TriContainer_New(60, -5, 40);
+	triangles = TriContainer_New(60, -5, 70, 43, 202);
 
 	//Front
 	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, -5, 5, 5, -5, -5, 5, -5));
