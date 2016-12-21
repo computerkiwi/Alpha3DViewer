@@ -32,12 +32,10 @@ TriContainer *triangles;
 // Handles things to be done each cycle of the loop. Returns TRUE to continue running.
 int GameLoop()
 {
-	static float z_distance = 0.4f;
-	static float x_distance = 0;
+	static float time = 0;
+	time += 0.025f;
 
-	z_distance += 0.001f;
-	x_distance = (float)(((int)x_distance + 2) % 500);
-
+	TriContainer_SetPos(triangles, cosf(time) * 15, sinf(time) * 15, 50, time, time + 60);
 
 	// Start drawing.
 	AESysFrameStart();
@@ -89,7 +87,7 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	Triangle3D_Init();
 
 	//Manually setup a cube.
-	triangles = TriContainer_New(60, -5, 70, 43, 202);
+	triangles = TriContainer_New(0, 0, 70, 43, 0);
 
 	//Front
 	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, -5, 5, 5, -5, -5, 5, -5));

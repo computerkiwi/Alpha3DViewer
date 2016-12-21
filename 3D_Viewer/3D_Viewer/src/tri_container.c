@@ -98,3 +98,52 @@ void TriContainer_Draw(TriContainer *triContainer, float cam_pos[], float cam_pi
 		}
 	}
 }
+
+//Sets the translation and rotation of the TriContainer.
+void TriContainer_SetPos(TriContainer *triContainer, float x, float y, float z, float pitch, float yaw)
+{
+	//Undo our current transformation.
+	for (int i = 0; i < MAX_TRIS; i++)
+	{
+		Triangle3D *tri = triContainer->triangles[i];
+		if (tri)
+		{
+			ArrayVector_Subtract(tri->points[0], triContainer->offset, tri->points[0], 3);
+			ArrayVector_Subtract(tri->points[1], triContainer->offset, tri->points[1], 3);
+			ArrayVector_Subtract(tri->points[2], triContainer->offset, tri->points[2], 3);
+
+			//We have to do pitch/yaw in the opposite order.
+			ArrayVector_Rotate(tri->points[0], 0, triContainer->yaw * -1);
+			ArrayVector_Rotate(tri->points[1], 0, triContainer->yaw * -1);
+			ArrayVector_Rotate(tri->points[2], 0, triContainer->yaw * -1);
+
+			ArrayVector_Rotate(tri->points[0],triContainer->pitch * -1, 0);
+			ArrayVector_Rotate(tri->points[1],triContainer->pitch * -1, 0);
+			ArrayVector_Rotate(tri->points[2],triContainer->pitch * -1, 0);
+		}
+	}
+
+	//Save our new transformation.
+	triContainer->offset[0] = x;
+	triContainer->offset[1] = y;
+	triContainer->offset[2] = z;
+
+	triContainer->pitch = pitch;
+	triContainer->yaw = yaw;
+
+	//Apply our new transformation to each triangle.
+	for (int i = 0; i < MAX_TRIS; i++)
+	{
+		Triangle3D *tri = triContainer->triangles[i];
+		if (tri)
+		{
+			ArrayVector_Rotate(tri->points[0], triContainer->pitch, triContainer->yaw);
+			ArrayVector_Rotate(tri->points[1], triContainer->pitch, triContainer->yaw);
+			ArrayVector_Rotate(tri->points[2], triContainer->pitch, triContainer->yaw);
+
+			ArrayVector_Add(tri->points[0], triContainer->offset, tri->points[0], 3);
+			ArrayVector_Add(tri->points[1], triContainer->offset, tri->points[1], 3);
+			ArrayVector_Add(tri->points[2], triContainer->offset, tri->points[2], 3);
+		}
+	}
+}

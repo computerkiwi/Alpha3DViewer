@@ -92,14 +92,7 @@ void Triangle3D_UpdateCentroid(Triangle3D *tri)
 
 //Draws a given triangle given a camera's position (3-large array), pitch, and yaw. Currently does not actually handle the camera.
 void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float cam_yaw)
-{
-	//Temp: MOVE AROUND
-	float dir[3] = { -0.1f,0.02f,-0.04f };
-	ArrayVector_Add(dir, tri->points[0], tri->points[0], 3);
-	ArrayVector_Add(dir, tri->points[1], tri->points[1], 3);
-	ArrayVector_Add(dir, tri->points[2], tri->points[2], 3);
-	//End Temp
-	
+{	
 	float points_2d[3][2]; //Newly projected points.
 
 	//TODO: Transform 3d points based on camera position.
@@ -149,7 +142,7 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 
 	//Get the shade we want the triangle to be based on angle to the camera.
 
-	float tint = 1.0f;
+	float tint = 0.9f;
 	float vAngle = ArrayVector_Angle(tri->normal, tri->centroid, 3);
 	if (vAngle > 90)
 	{
