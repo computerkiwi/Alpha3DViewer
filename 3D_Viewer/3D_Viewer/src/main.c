@@ -16,6 +16,7 @@ This file contains the entry into the program.
 #include "AEEngine.h"
 #include "triangle3d.h"
 #include "tri_container.h"
+#include "obj_parsing.h"
 
 // ---------------------------------------------------------------------------
 // Defines
@@ -56,6 +57,8 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	freopen("CONOUT$", "w", stdout);
 
 	//TODO: Load a .obj file.
+	TriContainer *loadedObject = TriContainer_New(0, 0, 0, 0, 0);
+	ParseObj("cube.obj", loadedObject);
 
 
 	_Unreferenced_parameter_(prevInstanceH);

@@ -11,6 +11,9 @@ This file contains implementation for a 3D triangle container.
 ******************************************************************************/
 #pragma once
 
+//Declare required structs.
+typedef struct Triangle3D Triangle3D;
+
 typedef struct TriContainer
 {
 	Triangle3D **triangles;

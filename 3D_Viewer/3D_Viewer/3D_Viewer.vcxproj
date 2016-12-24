@@ -133,11 +133,13 @@
   <ItemGroup>
     <ClCompile Include="src\arrayvector.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\obj_parsing.c" />
     <ClCompile Include="src\triangle3d.c" />
     <ClCompile Include="src\tri_container.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\arrayvector.h" />
+    <ClInclude Include="src\obj_parsing.h" />
     <ClInclude Include="src\triangle3d.h" />
     <ClInclude Include="src\tri_container.h" />
   </ItemGroup>
