@@ -20,9 +20,13 @@ This file contains implementation for parsing of obj files.
 // ---------------------------------------------------------------------------
 // Defines
 
+#define TRUE 1
+#define FALSE 0
+
 #define MAX_LINE_LENGTH 300
-#define MAX_COMMAND_LENGTH 3
+#define MAX_COMMAND_LENGTH 100
 #define MAX_VERTICIES 10000
+
 // ---------------------------------------------------------------------------
 // Structs
 
@@ -34,6 +38,7 @@ typedef struct VertList
 
 // ---------------------------------------------------------------------------
 // Globals
+static int true = TRUE; //Avoid compiler warnings for constant loops.
 
 // ---------------------------------------------------------------------------
 // VertList Functions
@@ -59,17 +64,17 @@ static Triangle3D *CreateTriFromVerts(VertList *vertList, int vIndex1, int vInde
 	float x3, y3, z3;
 
 	//Assign all the coordinates.
-	x1 = vertList->vertices[vIndex1][0];
-	y1 = vertList->vertices[vIndex1][1];
-	z1 = vertList->vertices[vIndex1][2];
-
-	x2 = vertList->vertices[vIndex2][0];
-	y2 = vertList->vertices[vIndex2][1];
-	z2 = vertList->vertices[vIndex2][2];
-
-	x3 = vertList->vertices[vIndex3][0];
-	y3 = vertList->vertices[vIndex3][1];
-	z3 = vertList->vertices[vIndex3][2];
+	x1 = vertList->vertices[vIndex1 - 1][0];
+	y1 = vertList->vertices[vIndex1 - 1][1];
+	z1 = vertList->vertices[vIndex1 - 1][2];
+	
+	x2 = vertList->vertices[vIndex2 - 1][0];
+	y2 = vertList->vertices[vIndex2 - 1][1];
+	z2 = vertList->vertices[vIndex2 - 1][2];
+	
+	x3 = vertList->vertices[vIndex3 - 1][0];
+	y3 = vertList->vertices[vIndex3 - 1][1];
+	z3 = vertList->vertices[vIndex3 - 1][2];
 
 	//Return the newly created triangle.
 	return Triangle3D_New(x1, y1, z1, x2, y2, z2, x3, y3, z3);
@@ -78,7 +83,7 @@ static Triangle3D *CreateTriFromVerts(VertList *vertList, int vIndex1, int vInde
 // ---------------------------------------------------------------------------
 // Parsing Functions
 
-//Parses a single vertices line, putting the vertices into the given list.
+//Parses a single vertex line, putting the vertices into the given list.
 static void ParseVert(char *lineBuffer, VertList *vertList)
 {
 	float x, y, z; //The coordinates of the vert.
@@ -88,6 +93,62 @@ static void ParseVert(char *lineBuffer, VertList *vertList)
 	sscanf(lineBuffer + 1, "%f%f%f", &x, &y, &z); //2 is to skip past "v"  at the start.
 	//Insert the coordinates to the vertlist.
 	AddVert(vertList, x, y, z);
+}
+
+//Gets the next coordinate given the index. Returns a negative value if no new character is found.
+static int GetFaceCoord(const char *buffer, int *index)
+{
+	int num; // The number to return.
+	//Find the next number.
+	while (true)
+	{
+		char currentChar = buffer[*index];
+		if (currentChar == '\n')
+		{
+			return -1;
+		}
+		else if (currentChar >= '0' && currentChar <= '9')
+		{
+			break;
+		}
+		(*index)++;
+	}
+	//Get that number.
+	sscanf(buffer + *index, "%d", &num);
+	//Move the index out of the number.
+	while (buffer[*index] != ' ' && buffer[*index] != '\n')
+	{
+		(*index)++;
+	}
+	return num;
+}
+
+//Parses a single face, splitting the face into triangles and putting them into the tri list.
+static void ParseFace(const char *lineBuffer, VertList *vertList, TriContainer *triContainer)
+{
+	int vertAnchor; //The vertex included in every triangle.
+	int vert1, vert2; //The other two vertices.
+
+	int index = 0;//The index into the string.
+
+	//Set up our initial 3 vertices.
+	vertAnchor = GetFaceCoord(lineBuffer, &index);
+	vert1 = GetFaceCoord(lineBuffer, &index);
+	vert2 = GetFaceCoord(lineBuffer, &index);
+
+	while (true)
+	{
+		//If vert2 couldn't be found, we're done.
+		if (vert2 < 0)
+		{
+			return;
+		}
+		//Add the new tri to the container.
+		TriContainer_AddTri(triContainer, CreateTriFromVerts(vertList, vertAnchor, vert1, vert2));
+		//Parse out another vert.
+		vert1 = vert2;
+		vert2 = GetFaceCoord(lineBuffer, &index);
+	}
 }
 
 //Parses a .obj file with the given filename and puts the resulting triangles in a tricontainer.
@@ -126,7 +187,7 @@ void ParseObj(char *filename, TriContainer *container)
 		{
 			//TODO: Handle a face
 			printf("Face line: %s\n", lineBuffer);
-			_CRT_UNUSED(container);
+			ParseFace(lineBuffer, &vertices, container);
 		}
 	}
 

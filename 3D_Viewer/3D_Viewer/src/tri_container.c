@@ -23,7 +23,7 @@ This file contains implementation for a 3D triangle container.
 // ---------------------------------------------------------------------------
 // Defines
 
-#define MAX_TRIS 100
+#define MAX_TRIS 10000
 #define PI 3.1415926535f
 
 // ---------------------------------------------------------------------------
@@ -33,7 +33,7 @@ This file contains implementation for a 3D triangle container.
 // Functions
 
 //Returns a pointer to a newly allocated TriContainer given offset coordinates.
-TriContainer *TriContainer_New(float x, float y, float z, float pitch, float yaw)
+TriContainer *TriContainer_New(float x, float y, float z, float pitch, float yaw, float scale)
 {
 	//Make a new tri container.
 	TriContainer *new_container = malloc(sizeof(TriContainer));
@@ -48,6 +48,7 @@ TriContainer *TriContainer_New(float x, float y, float z, float pitch, float yaw
 	new_container->offset[2] = z;
 	new_container->pitch = pitch * PI / 180;
 	new_container->yaw = yaw * PI / 180;
+	new_container->scale = scale;
 
 	return new_container;
 }
@@ -73,6 +74,9 @@ void TriContainer_AddTri(TriContainer *triContainer, Triangle3D *tri)
 	//If we're within our max array size...
 	if (i < MAX_TRIS)
 	{
+		ArrayVector_ScalarMultiply(tri->points[0], triContainer->scale, tri->points[0], 3);
+		ArrayVector_ScalarMultiply(tri->points[1], triContainer->scale, tri->points[1], 3);
+		ArrayVector_ScalarMultiply(tri->points[2], triContainer->scale, tri->points[2], 3);
 		//Rotate first. (HACKY)
 		ArrayVector_Rotate(tri->points[0], triContainer->pitch, triContainer->yaw);
 		ArrayVector_Rotate(tri->points[1], triContainer->pitch, triContainer->yaw);
@@ -100,7 +104,7 @@ void TriContainer_Draw(TriContainer *triContainer, float cam_pos[], float cam_pi
 }
 
 //Sets the translation and rotation of the TriContainer.
-void TriContainer_SetPos(TriContainer *triContainer, float x, float y, float z, float pitch, float yaw)
+void TriContainer_SetPos(TriContainer *triContainer, float x, float y, float z, float pitch, float yaw, float scale)
 {
 	//Undo our current transformation.
 	for (int i = 0; i < MAX_TRIS; i++)
@@ -120,6 +124,10 @@ void TriContainer_SetPos(TriContainer *triContainer, float x, float y, float z, 
 			ArrayVector_Rotate(tri->points[0],triContainer->pitch * -1, 0);
 			ArrayVector_Rotate(tri->points[1],triContainer->pitch * -1, 0);
 			ArrayVector_Rotate(tri->points[2],triContainer->pitch * -1, 0);
+
+			ArrayVector_ScalarDivide(tri->points[0], triContainer->scale, tri->points[0], 3);
+			ArrayVector_ScalarDivide(tri->points[1], triContainer->scale, tri->points[1], 3);
+			ArrayVector_ScalarDivide(tri->points[2], triContainer->scale, tri->points[2], 3);
 		}
 	}
 
@@ -131,12 +139,18 @@ void TriContainer_SetPos(TriContainer *triContainer, float x, float y, float z, 
 	triContainer->pitch = pitch;
 	triContainer->yaw = yaw;
 
+	triContainer->scale = scale;
+
 	//Apply our new transformation to each triangle.
 	for (int i = 0; i < MAX_TRIS; i++)
 	{
 		Triangle3D *tri = triContainer->triangles[i];
 		if (tri)
 		{
+			ArrayVector_ScalarMultiply(tri->points[0], triContainer->scale, tri->points[0], 3);
+			ArrayVector_ScalarMultiply(tri->points[1], triContainer->scale, tri->points[1], 3);
+			ArrayVector_ScalarMultiply(tri->points[2], triContainer->scale, tri->points[2], 3);
+
 			ArrayVector_Rotate(tri->points[0], triContainer->pitch, triContainer->yaw);
 			ArrayVector_Rotate(tri->points[1], triContainer->pitch, triContainer->yaw);
 			ArrayVector_Rotate(tri->points[2], triContainer->pitch, triContainer->yaw);

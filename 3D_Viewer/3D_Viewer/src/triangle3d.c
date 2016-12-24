@@ -110,7 +110,7 @@ void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float ca
 	}
 
 	//If the dot product is less than than zero, the triangle is pointing away from us so we don't draw it.
-	if (ArrayVector_DotProduct(tri->centroid, tri->normal, 3) < 0) //This might be backwards. Fix it later.
+	if (ArrayVector_DotProduct(tri->centroid, tri->normal, 3) > 0) //This might be backwards. Fix it later.
 	{
 		return;
 	}

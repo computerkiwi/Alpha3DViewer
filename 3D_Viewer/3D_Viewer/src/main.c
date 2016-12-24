@@ -36,7 +36,7 @@ int GameLoop()
 	static float time = 0;
 	time += 0.025f;
 
-	TriContainer_SetPos(triangles, cosf(time) * 15, sinf(time) * 15, 50, time, time * 1.2f);
+	TriContainer_SetPos(triangles, 0, 0, 150, time, time * 1.2f, 0.6f);
 
 	// Start drawing.
 	AESysFrameStart();
@@ -52,13 +52,14 @@ int GameLoop()
 // It's main. It launches everything.
 int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_line, int show)
 {
+
 	//Open a console.
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
 
 	//TODO: Load a .obj file.
-	TriContainer *loadedObject = TriContainer_New(0, 0, 0, 0, 0);
-	ParseObj("cube.obj", loadedObject);
+	triangles = TriContainer_New(0, 0, 50, 43, 0, 1);
+	ParseObj("model.obj", triangles);
 
 
 	_Unreferenced_parameter_(prevInstanceH);
@@ -72,6 +73,7 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 	sysInitInfo.mWindowHandle = NULL;
 	sysInitInfo.mAppInstance = instanceH;
 	sysInitInfo.mShow = show;
+
 	sysInitInfo.mWinWidth = 1280;
 	sysInitInfo.mWinHeight = 800;
 	sysInitInfo.mCreateConsole = 0;
@@ -88,35 +90,6 @@ int WINAPI WinMain(HINSTANCE instanceH, HINSTANCE prevInstanceH, LPSTR command_l
 
 	//Initialize 3D triangles
 	Triangle3D_Init();
-
-	//Manually setup a cube.
-	triangles = TriContainer_New(0, 0, 70, 43, 0);
-
-	//Front
-	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, -5, 5, 5, -5, -5, 5, -5));
-	//Bottom-right, upper-right, upper-left. Counter clockwise.
-	TriContainer_AddTri(triangles, Triangle3D_New(-5, -5, -5, 5, -5, -5, -5, 5, -5));
-	//Bottom-left, bottom-right, upper-left. Counter clockwise.
-
-	//Left
-	TriContainer_AddTri(triangles, Triangle3D_New(-5, 5, -5, -5, 5, 5, -5, -5, -5));
-	TriContainer_AddTri(triangles, Triangle3D_New(-5, 5, 5, -5, -5, 5, -5, -5, -5));
-
-	//Bottom
-	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, -5, -5, -5, -5, -5, -5, 5));
-	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, 5, 5, -5, -5, -5, -5, 5));
-
-	//Right
-	TriContainer_AddTri(triangles, Triangle3D_New(5, 5, 5, 5, 5, -5, 5, -5, -5));
-	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, 5, 5, 5, 5, 5, -5, -5));
-
-	//Top
-	TriContainer_AddTri(triangles, Triangle3D_New(-5, 5, -5, 5, 5, -5, -5, 5, 5));
-	TriContainer_AddTri(triangles, Triangle3D_New(5, 5, -5, 5, 5, 5, -5, 5, 5));
-
-	//Back
-	TriContainer_AddTri(triangles, Triangle3D_New(5, 5, 5, 5, -5, 5, -5, 5, 5));
-	TriContainer_AddTri(triangles, Triangle3D_New(5, -5, 5, -5, -5, 5, -5, 5, 5));
 
 	//Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);

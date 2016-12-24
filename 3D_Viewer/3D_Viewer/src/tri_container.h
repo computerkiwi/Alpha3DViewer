@@ -21,11 +21,12 @@ typedef struct TriContainer
 	float offset[3];
 	float pitch;
 	float yaw;
+	float scale;
 } TriContainer;
 
 
 //Returns a pointer to a newly allocated TriContainer given offset coordinates.
-TriContainer *TriContainer_New(float x, float y, float z, float pitch, float yaw);
+TriContainer *TriContainer_New(float x, float y, float z, float pitch, float yaw, float scale);
 
 //Frees all the memory associated with a tri container.
 void TriContainer_Free(TriContainer *triContainer);
@@ -37,4 +38,4 @@ void TriContainer_AddTri(TriContainer *triContainer, Triangle3D *tri);
 void TriContainer_Draw(TriContainer *triContainer, float cam_pos[], float cam_pitch, float cam_yaw);
 
 //Sets the translation and rotation of the TriContainer.
-void TriContainer_SetPos(TriContainer *triContainer, float x, float y, float z, float pitch, float yaw);
+void TriContainer_SetPos(TriContainer *triContainer, float x, float y, float z, float pitch, float yaw, float scale);
