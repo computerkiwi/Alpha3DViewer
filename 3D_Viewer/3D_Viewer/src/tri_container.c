@@ -64,6 +64,32 @@ void TriContainer_Free(TriContainer *triContainer)
 	//TODO: Free the TriContainer.
 }
 
+//Comparison function for qsort basing on distance from the origin.
+static int TriangleCompare(const void *tri1, const void *tri2)
+{
+	//Dereference the void pointers into triangles we can use.
+	Triangle3D *triangle1 = *(Triangle3D **)tri1;
+	Triangle3D *triangle2 = *(Triangle3D **)tri2;
+
+	//Return the magnitude of one vector subtracted from the magnitude of the other.
+	float mag1 = ArrayVector_Magnitude((triangle1)->centroid, 3);
+	float mag2 = ArrayVector_Magnitude((triangle2)->centroid, 3);
+	return (int)((mag1 - mag2) * 10000); //Multiply to help mitigate rounding errors to int.
+}
+
+//Sorts all the triangles in a tricontainer based on their distance from the origin.
+static void TriContainer_Sort(TriContainer *triContainer)
+{
+	int i = -1; //Index into the array.
+	while (triContainer->triangles[++i] != NULL && i < MAX_TRIS)
+	{
+		// Set i to the amount of triangles and update their centroids.
+		Triangle3D_UpdateCentroid(triContainer->triangles[i]);
+	}
+
+	qsort(triContainer->triangles, i, sizeof(TriContainer *), TriangleCompare);
+}
+
 //Adds a Triangle3D to the given TriContainer.
 void TriContainer_AddTri(TriContainer *triContainer, Triangle3D *tri)
 {
@@ -94,6 +120,8 @@ void TriContainer_AddTri(TriContainer *triContainer, Triangle3D *tri)
 //Draws all the triangles in a TriContainer.
 void TriContainer_Draw(TriContainer *triContainer, float cam_pos[], float cam_pitch, float cam_yaw)
 {
+	TriContainer_Sort(triContainer);
+
 	for (int i = 0; i < MAX_TRIS; i++)
 	{
 		if (triContainer->triangles[i])

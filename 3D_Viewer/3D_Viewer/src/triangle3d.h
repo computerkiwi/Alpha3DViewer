@@ -28,3 +28,6 @@ Triangle3D *Triangle3D_New(float x1, float y1, float z1, float x2, float y2, flo
 
 //Draws a given triangle given a camera's position (3-large array), pitch, and yaw. Currently does not actually handle the camera.
 void Triangle3D_Draw(Triangle3D *tri, float cam_pos[], float cam_pitch, float cam_yaw);
+
+//Updates the centroid point based on the other points
+void Triangle3D_UpdateCentroid(Triangle3D *tri);
