@@ -123,13 +123,15 @@ static int GetFaceCoord(const char *buffer, int *index)
 	return num;
 }
 
-//Parses a single face, splitting the face into triangles and putting them into the tri list.
-static void ParseFace(const char *lineBuffer, VertList *vertList, TriContainer *triContainer)
+//Parses a single face, splitting the face into triangles and putting them into the tri list. Returns count of tris added.
+static int ParseFace(const char *lineBuffer, VertList *vertList, TriContainer *triContainer)
 {
 	int vertAnchor; //The vertex included in every triangle.
 	int vert1, vert2; //The other two vertices.
 
 	int index = 0;//The index into the string.
+
+	int totalTris = 0;
 
 	//Set up our initial 3 vertices.
 	vertAnchor = GetFaceCoord(lineBuffer, &index);
@@ -141,14 +143,16 @@ static void ParseFace(const char *lineBuffer, VertList *vertList, TriContainer *
 		//If vert2 couldn't be found, we're done.
 		if (vert2 < 0)
 		{
-			return;
+			return totalTris;
 		}
 		//Add the new tri to the container.
 		TriContainer_AddTri(triContainer, CreateTriFromVerts(vertList, vertAnchor, vert1, vert2));
+		totalTris++;
 		//Parse out another vert.
 		vert1 = vert2;
 		vert2 = GetFaceCoord(lineBuffer, &index);
 	}
+	return totalTris;
 }
 
 //Parses a .obj file with the given filename and puts the resulting triangles in a tricontainer.
@@ -162,6 +166,11 @@ void ParseObj(char *filename, TriContainer *container)
 		printf("Failed to open file %s.", filename);
 		return;
 	}
+
+	//Set up our counts for printing later.
+	int totalVerts = 0;
+	int totalFaces = 0;
+	int totalTris  = 0;
 
 	//Set up our list of vertices.
 	VertList vertices;
@@ -179,17 +188,24 @@ void ParseObj(char *filename, TriContainer *container)
 		sscanf(lineBuffer, "%s", commandBuffer);
 		if (strcmp(commandBuffer, "v") == 0)
 		{
-			//TODO: Handle a vertex.
+			//Handle a vertex.
 			printf("Vertex line: %s\n", lineBuffer);
 			ParseVert(lineBuffer, &vertices);
+			totalVerts++;
 		}
 		else if (strcmp(commandBuffer, "f") == 0)
 		{
-			//TODO: Handle a face
+			//Handle a face
 			printf("Face line: %s\n", lineBuffer);
-			ParseFace(lineBuffer, &vertices, container);
+			totalTris += ParseFace(lineBuffer, &vertices, container);
+			totalFaces++;
 		}
 	}
+
+	printf("Finished parsing file \"%s\"\n", filename);
+	printf(" Vertices: %d\n", totalVerts);
+	printf("    Faces: %d\n", totalFaces);
+	printf("Triangles: %d\n", totalTris);
 
 	//Close the file.
 	fclose(file);
