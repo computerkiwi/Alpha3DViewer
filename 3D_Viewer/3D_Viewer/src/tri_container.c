@@ -74,7 +74,7 @@ static int TriangleCompare(const void *tri1, const void *tri2)
 	//Return the magnitude of one vector subtracted from the magnitude of the other.
 	float mag1 = ArrayVector_Magnitude((triangle1)->centroid, 3);
 	float mag2 = ArrayVector_Magnitude((triangle2)->centroid, 3);
-	return (int)((mag1 - mag2) * 10000); //Multiply to help mitigate rounding errors to int.
+	return (int)((mag2 - mag1) * 10000); //Multiply to help mitigate rounding errors to int.
 }
 
 //Sorts all the triangles in a tricontainer based on their distance from the origin.
